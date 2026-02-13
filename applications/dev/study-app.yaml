@@ -3,6 +3,11 @@ kind: Application
 metadata:
   name: study
   namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: study=ghcr.io/checkmate/checkmate-study
+    argocd-image-updater.argoproj.io/study.update-strategy: newest-build
+    argocd-image-updater.argoproj.io/study.helm.image-name: image.repository
+    argocd-image-updater.argoproj.io/study.helm.image-tag: image.tag
 spec:
   project: default
   source:

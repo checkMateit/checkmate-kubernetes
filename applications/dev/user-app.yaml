@@ -3,6 +3,11 @@ kind: Application
 metadata:
   name: user
   namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: user=ghcr.io/checkmate/checkmate-user
+    argocd-image-updater.argoproj.io/user.update-strategy: newest-build
+    argocd-image-updater.argoproj.io/user.helm.image-name: image.repository
+    argocd-image-updater.argoproj.io/user.helm.image-tag: image.tag
 spec:
   project: default
   source:
