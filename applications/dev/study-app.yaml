@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: study
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/checkMateit/checkmate-kubernetes.git
+    targetRevision: HEAD
+    path: charts/study
+    helm:
+      valueFiles:
+        - ../../values/dev/study.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: study
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

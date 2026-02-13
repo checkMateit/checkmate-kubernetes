@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: community
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/checkMateit/checkmate-kubernetes.git
+    targetRevision: HEAD
+    path: charts/community
+    helm:
+      valueFiles:
+        - ../../values/dev/community.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: community
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
