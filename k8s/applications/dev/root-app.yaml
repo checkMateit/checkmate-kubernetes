@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: checkmate-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/checkMateit/checkmate-kubernetes.git
+    targetRevision: HEAD
+    path: applications/dev
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
