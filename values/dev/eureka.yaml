@@ -1,3 +1,5 @@
 image:
   repository: ghcr.io/checkmateit/checkmate-eureka
-  tag: "0.0.0" 
+  tag: "0.0.0"
+imagePullSecrets:
+  - name: ghcr-creds
