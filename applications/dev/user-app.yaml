@@ -4,11 +4,12 @@ metadata:
   name: user
   namespace: argocd
   annotations:
-    argocd-image-updater.argoproj.io/image-list: user=checkmateit/checkmate-user
+    argocd-image-updater.argoproj.io/image-list: user=ghcr.io/checkmateit/checkmate-user
     argocd-image-updater.argoproj.io/user.update-strategy: newest-build
     argocd-image-updater.argoproj.io/user.helm.image-name: image.repository
     argocd-image-updater.argoproj.io/user.helm.image-tag: image.tag
     argocd-image-updater.argoproj.io/user.allow-tags: "regexp:^[0-9]+$"
+    argocd-image-updater.argoproj.io/user.force-update: "true"
     argocd-image-updater.argoproj.io/write-back-method: git
     argocd-image-updater.argoproj.io/git-branch: main
 spec:
