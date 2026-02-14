@@ -1,3 +1,3 @@
 image:
-  repository: ghcr.io/bleuxsy/checkmate-community
+  repository: ghcr.io/checkmateit/checkmate-community
   tag: "0.0.0" 
