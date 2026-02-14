@@ -5,9 +5,10 @@ metadata:
   namespace: argocd
   annotations:
     argocd-image-updater.argoproj.io/image-list: community=ghcr.io/checkmateit/checkmate-community
-    argocd-image-updater.argoproj.io/community.update-strategy: newest-build
+    argocd-image-updater.argoproj.io/community.update-strategy: latest
     argocd-image-updater.argoproj.io/community.helm.image-name: image.repository
     argocd-image-updater.argoproj.io/community.helm.image-tag: image.tag
+    argocd-image-updater.argoproj.io/community.allow-tags: "regexp:^[0-9]+$"
     argocd-image-updater.argoproj.io/write-back-method: git
     argocd-image-updater.argoproj.io/git-branch: main
 spec:

@@ -5,9 +5,10 @@ metadata:
   namespace: argocd
   annotations:
     argocd-image-updater.argoproj.io/image-list: store=ghcr.io/checkmateit/checkmate-store
-    argocd-image-updater.argoproj.io/store.update-strategy: newest-build
+    argocd-image-updater.argoproj.io/store.update-strategy: latest
     argocd-image-updater.argoproj.io/store.helm.image-name: image.repository
     argocd-image-updater.argoproj.io/store.helm.image-tag: image.tag
+    argocd-image-updater.argoproj.io/store.allow-tags: "regexp:^[0-9]+$"
     argocd-image-updater.argoproj.io/write-back-method: git
     argocd-image-updater.argoproj.io/git-branch: main
 spec:
