@@ -4,7 +4,7 @@ metadata:
   name: gateway
   namespace: argocd
   annotations:
-    argocd-image-updater.argoproj.io/image-list: gateway=ghcr.io/checkmate/checkmate-gateway
+    argocd-image-updater.argoproj.io/image-list: gateway=ghcr.io/checkmateit/checkmate-gateway
     argocd-image-updater.argoproj.io/gateway.update-strategy: newest-build
     argocd-image-updater.argoproj.io/gateway.helm.image-name: image.repository
     argocd-image-updater.argoproj.io/gateway.helm.image-tag: image.tag

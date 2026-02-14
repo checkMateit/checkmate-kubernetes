@@ -4,7 +4,7 @@ metadata:
   name: store
   namespace: argocd
   annotations:
-    argocd-image-updater.argoproj.io/image-list: store=ghcr.io/checkmate/checkmate-store
+    argocd-image-updater.argoproj.io/image-list: store=ghcr.io/checkmateit/checkmate-store
     argocd-image-updater.argoproj.io/store.update-strategy: newest-build
     argocd-image-updater.argoproj.io/store.helm.image-name: image.repository
     argocd-image-updater.argoproj.io/store.helm.image-tag: image.tag
