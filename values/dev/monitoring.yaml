@@ -66,6 +66,12 @@ loki:
   deploymentMode: SingleBinary
   singleBinary:
     replicas: 1
+  backend:
+    replicas: 0
+  read:
+    replicas: 0
+  write:
+    replicas: 0
   test:
     enabled: false
 
