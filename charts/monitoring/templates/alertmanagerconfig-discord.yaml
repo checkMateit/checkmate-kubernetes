@@ -8,13 +8,28 @@ metadata:
     release: monitoring
 spec:
   route:
-    receiver: discord-webhook
+    receiver: "null"
     routes:
       - receiver: "null"
         matchers:
           - name: alertname
             matchType: "="
             value: Watchdog
+      - receiver: "null"
+        matchers:
+          - name: alertname
+            matchType: "="
+            value: NodeClockNotSynchronising
+      - receiver: "null"
+        matchers:
+          - name: alertname
+            matchType: "="
+            value: PrometheusRuleFailures
+      - receiver: discord-webhook
+        matchers:
+          - name: alertname
+            matchType: "=~"
+            value: "SpringErrorLogsDetected|HighNodeCPUUsage|HighServicePodCPUUsage|DiscordWebhookTest"
     groupBy:
       - alertname
       - namespace
