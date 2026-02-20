@@ -4,5 +4,5 @@ helm:
     value: ghcr.io/checkmateit/checkmate-community
     forcestring: true
   - name: image.tag
-    value: "34"
+    value: "35"
     forcestring: true
