@@ -26,24 +26,14 @@ kube-prometheus-stack:
 
   alertmanager:
     enabled: true
-    config:
-      global:
-        resolve_timeout: 5m
-      route:
-        receiver: discord-webhook
-        group_wait: 30s
-        group_interval: 5m
-        repeat_interval: 4h
-      receivers:
-        - name: "null"
-        - name: discord-webhook
-          webhook_configs:
-            - url_file: /etc/alertmanager/secrets/discord-webhook/url
-              send_resolved: true
     alertmanagerSpec:
       replicas: 1
-      secrets:
-        - discord-webhook
+      alertmanagerConfigMatcherStrategy:
+        type: None
+      alertmanagerConfigSelector:
+        matchLabels:
+          release: monitoring
+      alertmanagerConfigNamespaceSelector: {}
 
 loki:
   loki:
