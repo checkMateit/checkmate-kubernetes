@@ -19,8 +19,13 @@ for ns in "${NAMESPACES[@]}"; do
     --from-literal=DB_USERNAME="${DB_USERNAME}" \
     --from-literal=DB_PASSWORD="${DB_PASSWORD}" \
     --from-literal=DB_NAME="${DB_NAME}" \
+    --from-literal=SPRING_DATASOURCE_URL="${DB_URL}" \
+    --from-literal=SPRING_DATASOURCE_USERNAME="${DB_USERNAME}" \
+    --from-literal=SPRING_DATASOURCE_PASSWORD="${DB_PASSWORD}" \
     --from-literal=REDIS_HOST="${REDIS_HOST}" \
     --from-literal=REDIS_PORT="${REDIS_PORT}" \
+    --from-literal=SPRING_REDIS_HOST="${REDIS_HOST}" \
+    --from-literal=SPRING_REDIS_PORT="${REDIS_PORT}" \
     --from-literal=JWT_SECRET="${JWT_SECRET}" \
     --from-literal=JWT_ACCESS_EXPIRATION="${JWT_ACCESS_EXPIRATION}" \
     --from-literal=JWT_REFRESH_EXPIRATION="${JWT_REFRESH_EXPIRATION}" \
