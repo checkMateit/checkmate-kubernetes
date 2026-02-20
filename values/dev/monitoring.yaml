@@ -1,6 +1,9 @@
 kube-prometheus-stack:
   crds:
     enabled: false
+  prometheusOperator:
+    admissionWebhooks:
+      enabled: false
 
   grafana:
     enabled: true
