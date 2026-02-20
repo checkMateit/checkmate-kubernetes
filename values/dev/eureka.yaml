@@ -6,3 +6,5 @@ imagePullSecrets:
 envFrom:
   - secretRef:
       name: app-secrets
+service:
+  port: 8761
