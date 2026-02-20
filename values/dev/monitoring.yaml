@@ -74,6 +74,10 @@ loki:
     replicas: 0
   test:
     enabled: false
+  chunksCache:
+    enabled: false
+  resultsCache:
+    enabled: false
 
 promtail:
   config:
