@@ -13,6 +13,10 @@ kube-prometheus-stack:
     sidecar:
       datasources:
         enabled: true
+      dashboards:
+        enabled: true
+        label: grafana_dashboard
+        labelValue: "1"
 
   prometheus:
     enabled: true
