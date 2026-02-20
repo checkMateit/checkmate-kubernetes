@@ -27,6 +27,7 @@ kube-prometheus-stack:
   alertmanager:
     enabled: true
     alertmanagerSpec:
+      version: v0.28.0
       replicas: 1
       alertmanagerConfigMatcherStrategy:
         type: None

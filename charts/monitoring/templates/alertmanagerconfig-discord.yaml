@@ -9,6 +9,12 @@ metadata:
 spec:
   route:
     receiver: discord-webhook
+    routes:
+      - receiver: "null"
+        matchers:
+          - name: alertname
+            matchType: "="
+            value: Watchdog
     groupBy:
       - alertname
       - namespace
@@ -17,6 +23,7 @@ spec:
     groupInterval: 5m
     repeatInterval: 4h
   receivers:
+    - name: "null"
     - name: discord-webhook
       webhookConfigs:
         - urlSecret:
