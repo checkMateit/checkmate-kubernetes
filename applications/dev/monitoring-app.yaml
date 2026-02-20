@@ -10,10 +10,18 @@ spec:
       kind: Prometheus
       managedFieldsManagers:
         - prometheus-operator
+      jqPathExpressions:
+        - .metadata.annotations
+        - .metadata.finalizers
+        - .spec
     - group: monitoring.coreos.com
       kind: Alertmanager
       managedFieldsManagers:
         - prometheus-operator
+      jqPathExpressions:
+        - .metadata.annotations
+        - .metadata.finalizers
+        - .spec
   source:
     repoURL: https://github.com/checkMateit/checkmate-kubernetes.git
     targetRevision: HEAD
