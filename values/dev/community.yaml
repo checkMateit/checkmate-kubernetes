@@ -6,3 +6,21 @@ imagePullSecrets:
 envFrom:
   - secretRef:
       name: app-secrets
+service:
+  port: 8082
+livenessProbe:
+  httpGet: null
+  tcpSocket:
+    port: http
+  initialDelaySeconds: 30
+  timeoutSeconds: 5
+  periodSeconds: 10
+  failureThreshold: 6
+readinessProbe:
+  httpGet: null
+  tcpSocket:
+    port: http
+  initialDelaySeconds: 20
+  timeoutSeconds: 5
+  periodSeconds: 10
+  failureThreshold: 6
