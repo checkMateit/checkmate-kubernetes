@@ -9,6 +9,7 @@ envFrom:
 service:
   port: 8080
 livenessProbe:
+  httpGet: null
   tcpSocket:
     port: http
   initialDelaySeconds: 30
@@ -16,6 +17,7 @@ livenessProbe:
   periodSeconds: 10
   failureThreshold: 6
 readinessProbe:
+  httpGet: null
   tcpSocket:
     port: http
   initialDelaySeconds: 20
