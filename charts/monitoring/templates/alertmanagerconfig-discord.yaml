@@ -29,11 +29,12 @@ spec:
         - apiURL:
             name: discord-webhook
             key: url
+          fallback: "Alert {{`{{ .CommonLabels.alertname }}`}} ({{`{{ .Status }}`}})"
           title: "[{{`{{ .Status | toUpper }}`}}] {{`{{ .CommonLabels.alertname }}`}}"
           text: >-
+            alert={{`{{ .CommonLabels.alertname }}`}} status={{`{{ .Status }}`}}
             {{`{{ range .Alerts }}`}}
-            *{{`{{ .Annotations.summary }}`}}*
-            {{`{{ .Annotations.description }}`}}
-            labels: {{`{{ .Labels }}`}}
+            - {{`{{ if .Annotations.summary }}`}}{{`{{ .Annotations.summary }}`}}{{`{{ else }}`}}{{`{{ .Labels.alertname }}`}}{{`{{ end }}`}}
+            {{`{{ if .Annotations.description }}`}} | {{`{{ .Annotations.description }}`}}{{`{{ end }}`}}
             {{`{{ end }}`}}
           sendResolved: true
