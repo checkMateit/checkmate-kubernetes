@@ -25,8 +25,15 @@ spec:
   receivers:
     - name: "null"
     - name: discord-webhook
-      webhookConfigs:
-        - urlSecret:
+      slackConfigs:
+        - apiURL:
             name: discord-webhook
             key: url
+          title: "[{{`{{ .Status | toUpper }}`}}] {{`{{ .CommonLabels.alertname }}`}}"
+          text: >-
+            {{`{{ range .Alerts }}`}}
+            *{{`{{ .Annotations.summary }}`}}*
+            {{`{{ .Annotations.description }}`}}
+            labels: {{`{{ .Labels }}`}}
+            {{`{{ end }}`}}
           sendResolved: true
