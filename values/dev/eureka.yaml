@@ -3,3 +3,6 @@ image:
   tag: "0.0.0"
 imagePullSecrets:
   - name: ghcr-creds
+envFrom:
+  - secretRef:
+      name: app-secrets

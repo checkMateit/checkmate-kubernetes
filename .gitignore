@@ -1,0 +1,2 @@
+.env.dev.secrets
+applications/dev/secrets/*.local.yaml
