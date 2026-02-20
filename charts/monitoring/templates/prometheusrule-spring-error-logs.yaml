@@ -19,3 +19,33 @@ spec:
             summary: "{{`{{ $labels.pod }}`}} 서비스에서 ERROR 발생"
             description: "{{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} 최근 5분 ERROR {{`{{ printf \"%.0f\" $value }}`}}건 감지. 상세 에러 내용은 Grafana Loki 대시보드 확인."
             dashboard_url: "http://monitoring-grafana.monitoring.svc.cluster.local/d/loki-error-logs/loki-error-logs"
+    - name: cpu-alerts
+      rules:
+        - alert: HighNodeCPUUsage
+          expr: (1 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m]))) * 100 > 80
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "노드 CPU 사용률 높음 ({{`{{ $labels.instance }}`}})"
+            description: "{{`{{ $labels.instance }}`}} CPU 사용률이 5분 이상 {{`{{ printf \"%.1f\" $value }}`}}% 입니다."
+        - alert: HighServicePodCPUUsage
+          expr: |
+            (
+              sum by (namespace, pod) (
+                rate(container_cpu_usage_seconds_total{container!="", image!="", namespace=~"community|study|user|store|gateway|eureka"}[5m])
+              )
+              /
+              clamp_min(
+                sum by (namespace, pod) (
+                  kube_pod_container_resource_limits{resource="cpu", unit="core", namespace=~"community|study|user|store|gateway|eureka"}
+                ),
+                0.001
+              )
+            ) * 100 > 80
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{`{{ $labels.pod }}`}} CPU 사용률 높음"
+            description: "{{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} CPU 사용률이 limit 대비 5분 이상 {{`{{ printf \"%.1f\" $value }}`}}% 입니다."
