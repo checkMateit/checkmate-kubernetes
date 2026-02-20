@@ -18,3 +18,4 @@ spec:
           annotations:
             summary: "{{`{{ $labels.pod }}`}} 서비스에서 ERROR 발생"
             description: "{{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} 최근 5분 ERROR {{`{{ printf \"%.0f\" $value }}`}}건 감지. 상세 에러 내용은 Grafana Loki 대시보드 확인."
+            dashboard_url: "http://monitoring-grafana.monitoring.svc.cluster.local/d/loki-error-logs/loki-error-logs"
