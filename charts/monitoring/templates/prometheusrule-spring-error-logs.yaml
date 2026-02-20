@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: monitoring-spring-error-logs
+  labels:
+    app.kubernetes.io/name: monitoring
+    app.kubernetes.io/part-of: monitoring
+    release: monitoring
+spec:
+  groups:
+    - name: spring-error-logs
+      rules:
+        - alert: SpringErrorLogsDetected
+          expr: sum by (namespace, pod) (increase(promtail_custom_spring_error_logs_total[5m])) > 0
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{`{{ $labels.pod }}`}} 서비스에서 ERROR 발생"
+            description: "{{`{{ $labels.namespace }}`}}/{{`{{ $labels.pod }}`}} 최근 5분 ERROR {{`{{ printf \"%.0f\" $value }}`}}건 감지. 상세 에러 내용은 Grafana Loki 대시보드 확인."
