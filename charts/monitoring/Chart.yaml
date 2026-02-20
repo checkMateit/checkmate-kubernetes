@@ -1,0 +1,16 @@
+apiVersion: v2
+name: monitoring
+description: Umbrella chart for monitoring stack (Prometheus, Grafana, Loki, Promtail)
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+dependencies:
+  - name: kube-prometheus-stack
+    version: 65.8.1
+    repository: https://prometheus-community.github.io/helm-charts
+  - name: loki
+    version: 6.29.0
+    repository: https://grafana.github.io/helm-charts
+  - name: promtail
+    version: 6.16.6
+    repository: https://grafana.github.io/helm-charts

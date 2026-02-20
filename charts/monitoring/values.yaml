@@ -1,0 +1,2 @@
+# Defaults are intentionally minimal.
+# Environment-specific configuration is defined in values/dev/monitoring.yaml.
