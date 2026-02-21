@@ -6,6 +6,11 @@ imagePullSecrets:
 envFrom:
   - secretRef:
       name: app-secrets
+extraEnv:
+  - name: MANAGEMENT_ENDPOINT_GATEWAY_ENABLED
+    value: "true"
+  - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+    value: "health,info,gateway"
 service:
   port: 8080
 livenessProbe:
