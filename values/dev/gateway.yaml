@@ -12,7 +12,18 @@ extraEnv:
   - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
     value: "health,info,gateway"
 service:
+  type: ClusterIP
   port: 8080
+ingress:
+  enabled: true
+  className: traefik
+  annotations: {}
+  hosts:
+    - host: api.localtest.me
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
 livenessProbe:
   httpGet: null
   tcpSocket:
