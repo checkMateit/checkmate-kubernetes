@@ -15,11 +15,13 @@ kube-prometheus-stack:
       size: 10Gi
     additionalDataSources:
       - name: Loki
+        uid: loki
         type: loki
         access: proxy
         url: http://monitoring-loki-gateway.monitoring.svc.cluster.local
         isDefault: false
       - name: Alertmanager
+        uid: alertmanager
         type: alertmanager
         access: proxy
         url: http://monitoring-kube-prometheus-alertmanager.monitoring:9093
