@@ -19,7 +19,7 @@ ingress:
   className: traefik
   annotations: {}
   hosts:
-    - host: api.localtest.me
+    - host: api.checkmate
       paths:
         - path: /
           pathType: Prefix
