@@ -1,0 +1,236 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-grafana-dashboard-gateway-api
+  labels:
+    grafana_dashboard: "1"
+    app.kubernetes.io/name: monitoring
+    app.kubernetes.io/part-of: monitoring
+    app.kubernetes.io/component: grafana-dashboard
+data:
+  gateway-api-traffic-dashboard.json: |
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "id": null,
+      "links": [],
+      "panels": [
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": {
+            "defaults": { "unit": "reqps", "color": { "mode": "palette-classic" } },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+          "id": 1,
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "expr": "sum by (routeId) (rate(spring_cloud_gateway_requests_seconds_count{routeId=~\"$routeId\"}[5m]))",
+              "legendFormat": "{{`{{routeId}}`}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Request Rate by Route (RPS)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": {
+            "defaults": { "unit": "s", "color": { "mode": "palette-classic" } },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+          "id": 2,
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95, sum by (le, routeId) (rate(spring_cloud_gateway_requests_seconds_bucket{routeId=~\"$routeId\"}[5m])))",
+              "legendFormat": "p95 {{`{{routeId}}`}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Response Time p95 by Route",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": {
+            "defaults": { "unit": "s", "color": { "mode": "palette-classic" } },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+          "id": 3,
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "expr": "sum by (routeId) (rate(spring_cloud_gateway_requests_seconds_sum{routeId=~\"$routeId\"}[5m])) / sum by (routeId) (rate(spring_cloud_gateway_requests_seconds_count{routeId=~\"$routeId\"}[5m]))",
+              "legendFormat": "avg {{`{{routeId}}`}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Average Response Time by Route",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": {
+            "defaults": { "unit": "percentunit", "color": { "mode": "palette-classic" } },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+          "id": 4,
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "expr": "sum by (routeId) (rate(spring_cloud_gateway_requests_seconds_count{routeId=~\"$routeId\",httpStatusCode=~\"5..\"}[5m])) / clamp_min(sum by (routeId) (rate(spring_cloud_gateway_requests_seconds_count{routeId=~\"$routeId\"}[5m])), 0.0001)",
+              "legendFormat": "5xx rate {{`{{routeId}}`}}",
+              "refId": "A"
+            }
+          ],
+          "title": "5xx Error Rate by Route",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": {
+            "defaults": { "unit": "short", "color": { "mode": "palette-classic" } },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+          "id": 5,
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "expr": "sum by (routeId, httpStatusCode) (increase(spring_cloud_gateway_requests_seconds_count{routeId=~\"$routeId\"}[$__range]))",
+              "legendFormat": "{{`{{routeId}}`}} / {{`{{httpStatusCode}}`}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Status Code Counts by Route (Selected Range)",
+          "type": "barchart"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "fieldConfig": {
+            "defaults": {
+              "custom": { "align": "auto", "displayMode": "auto" },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 10, "w": 24, "x": 0, "y": 24 },
+          "id": 6,
+          "options": {
+            "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+            "showHeader": true,
+            "sortBy": [ { "desc": true, "displayName": "Total Requests" } ]
+          },
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "sum by (routeId) (increase(spring_cloud_gateway_requests_seconds_count{routeId=~\"$routeId\"}[$__range]))",
+              "format": "table",
+              "instant": true,
+              "legendFormat": "",
+              "refId": "A"
+            },
+            {
+              "editorMode": "code",
+              "expr": "histogram_quantile(0.95, sum by (le, routeId) (rate(spring_cloud_gateway_requests_seconds_bucket{routeId=~\"$routeId\"}[5m])))",
+              "format": "table",
+              "instant": true,
+              "refId": "B"
+            },
+            {
+              "editorMode": "code",
+              "expr": "sum by (routeId) (rate(spring_cloud_gateway_requests_seconds_count{routeId=~\"$routeId\",httpStatusCode=~\"5..\"}[5m])) / clamp_min(sum by (routeId) (rate(spring_cloud_gateway_requests_seconds_count{routeId=~\"$routeId\"}[5m])), 0.0001)",
+              "format": "table",
+              "instant": true,
+              "refId": "C"
+            }
+          ],
+          "title": "Route Summary (Total / p95 / 5xx Rate)",
+          "transformations": [
+            { "id": "labelsToFields", "options": { "mode": "columns" } },
+            { "id": "merge", "options": {} },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": { "Time": true, "Value #A": false, "Value #B": false, "Value #C": false },
+                "indexByName": {
+                  "Value #A": 1,
+                  "Value #B": 2,
+                  "Value #C": 3,
+                  "routeId": 0
+                },
+                "renameByName": {
+                  "Value #A": "Total Requests",
+                  "Value #B": "p95 (s)",
+                  "Value #C": "5xx Rate",
+                  "routeId": "Route"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 39,
+      "style": "dark",
+      "tags": ["gateway", "api", "traffic", "prometheus"],
+      "templating": {
+        "list": [
+          {
+            "current": { "selected": true, "text": "All", "value": ".*" },
+            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "includeAll": true,
+            "label": "Route",
+            "multi": false,
+            "name": "routeId",
+            "options": [],
+            "query": "label_values(spring_cloud_gateway_requests_seconds_count, routeId)",
+            "refresh": 2,
+            "sort": 1,
+            "type": "query"
+          }
+        ]
+      },
+      "time": { "from": "now-1h", "to": "now" },
+      "timezone": "",
+      "title": "Gateway API Traffic",
+      "uid": "gateway-api-traffic",
+      "version": 1,
+      "weekStart": ""
+    }
