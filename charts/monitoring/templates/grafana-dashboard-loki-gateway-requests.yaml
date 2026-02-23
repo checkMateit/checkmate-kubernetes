@@ -1,0 +1,204 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-grafana-dashboard-loki-gateway-requests
+  labels:
+    grafana_dashboard: "1"
+    app.kubernetes.io/name: monitoring
+    app.kubernetes.io/part-of: monitoring
+    app.kubernetes.io/component: grafana-dashboard
+data:
+  loki-gateway-requests-dashboard.json: |
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "id": null,
+      "links": [],
+      "panels": [
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "fieldConfig": {
+            "defaults": { "unit": "reqps", "color": { "mode": "palette-classic" } },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+          "id": 1,
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "sum by (path) (count_over_time({namespace=\"gateway\",container=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+)(?: (?P<duration_ms>[0-9]+))?.*` | path=~\"$path\" [$__interval]))",
+              "legendFormat": "{{`{{path}}`}}",
+              "queryType": "range",
+              "refId": "A"
+            }
+          ],
+          "title": "Request Rate by Path (Loki)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "fieldConfig": {
+            "defaults": { "unit": "short", "color": { "mode": "palette-classic" } },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+          "id": 2,
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "sum by (status) (count_over_time({namespace=\"gateway\",container=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+)(?: (?P<duration_ms>[0-9]+))?.*` | path=~\"$path\" [$__interval]))",
+              "legendFormat": "{{`{{status}}`}}",
+              "queryType": "range",
+              "refId": "A"
+            }
+          ],
+          "title": "Status Codes",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "fieldConfig": {
+            "defaults": { "unit": "ms", "color": { "mode": "palette-classic" } },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+          "id": 3,
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "avg_over_time(({namespace=\"gateway\",container=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+)(?: (?P<duration_ms>[0-9]+))?.*` | path=~\"$path\" | unwrap duration_ms)[$__interval])",
+              "legendFormat": "avg duration",
+              "queryType": "range",
+              "refId": "A"
+            }
+          ],
+          "title": "Average Response Time (ms, if access log includes duration)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "fieldConfig": {
+            "defaults": { "unit": "short", "color": { "mode": "thresholds" } },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 16 },
+          "id": 4,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+            "textMode": "auto"
+          },
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "sum(count_over_time({namespace=\"gateway\",container=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+)(?: (?P<duration_ms>[0-9]+))?.*` | status=~\"5..\" | path=~\"$path\" [5m]))",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "5xx in Last 5m",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "fieldConfig": {
+            "defaults": { "unit": "short", "color": { "mode": "palette-classic" } },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 16, "x": 8, "y": 16 },
+          "id": 5,
+          "options": {
+            "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "topk(10, sum by (path) (count_over_time({namespace=\"gateway\",container=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+)(?: (?P<duration_ms>[0-9]+))?.*` | path=~\"$path\" [5m])))",
+              "legendFormat": "{{`{{path}}`}}",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "Top Paths (5m)",
+          "type": "barchart"
+        },
+        {
+          "datasource": { "type": "loki", "uid": "loki" },
+          "gridPos": { "h": 12, "w": 24, "x": 0, "y": 24 },
+          "id": 6,
+          "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "sortOrder": "Descending", "wrapLogMessage": true },
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "{namespace=\"gateway\",container=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+)(?: (?P<duration_ms>[0-9]+))?.*` | path=~\"$path\"",
+              "queryType": "range",
+              "refId": "A"
+            }
+          ],
+          "title": "Gateway Access Logs (Loki)",
+          "type": "logs"
+        }
+      ],
+      "refresh": "30s",
+      "schemaVersion": 39,
+      "style": "dark",
+      "tags": ["gateway", "loki", "api", "logs"],
+      "templating": {
+        "list": [
+          {
+            "current": { "selected": true, "text": "All", "value": ".*" },
+            "datasource": { "type": "loki", "uid": "loki" },
+            "includeAll": true,
+            "label": "Path",
+            "multi": false,
+            "name": "path",
+            "options": [],
+            "query": {
+              "label": "path",
+              "refId": "LokiVariableQueryEditor-Path",
+              "stream": "{namespace=\"gateway\",container=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+)(?: (?P<duration_ms>[0-9]+))?.*`",
+              "type": 1
+            },
+            "refresh": 2,
+            "sort": 1,
+            "type": "query"
+          }
+        ]
+      },
+      "time": { "from": "now-1h", "to": "now" },
+      "timezone": "",
+      "title": "Loki - Gateway API Requests",
+      "uid": "loki-gateway-api-requests",
+      "version": 1,
+      "weekStart": ""
+    }

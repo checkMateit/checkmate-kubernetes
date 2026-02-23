@@ -13,6 +13,10 @@ extraEnv:
     value: "health,info,gateway,prometheus"
   - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
     value: "true"
+  - name: JAVA_TOOL_OPTIONS
+    value: "-Dreactor.netty.http.server.accessLogEnabled=true"
+  - name: LOGGING_LEVEL_REACTOR_NETTY_HTTP_SERVER_ACCESSLOG
+    value: "INFO"
 service:
   type: ClusterIP
   port: 8080
