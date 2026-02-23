@@ -16,6 +16,12 @@ extraEnv:
 service:
   type: ClusterIP
   port: 8080
+serviceMonitor:
+  enabled: true
+  labels:
+    release: monitoring
+  path: /actuator/prometheus
+  interval: 30s
 ingress:
   enabled: true
   className: traefik
