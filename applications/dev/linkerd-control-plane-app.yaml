@@ -19,12 +19,6 @@ spec:
           issuer:
             scheme: kubernetes.io/tls
             crtExpiry: 8760h0m0s
-        proxyInjector:
-          externalSecret: true
-        profileValidator:
-          externalSecret: true
-        policyValidator:
-          externalSecret: true
   destination:
     server: https://kubernetes.default.svc
     namespace: linkerd
