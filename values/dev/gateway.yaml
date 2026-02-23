@@ -1,7 +1,6 @@
 image:
   repository: ghcr.io/checkmateit/checkmate-gateway
   tag: "0.0.0"
-replicaCount: 5
 imagePullSecrets:
   - name: ghcr-creds
 envFrom:
