@@ -10,6 +10,13 @@ kube-prometheus-stack:
     adminPassword: admin
     service:
       type: ClusterIP
+    ingress:
+      enabled: true
+      ingressClassName: traefik
+      hosts:
+        - grafana.checkmate
+      path: /
+      pathType: Prefix
     persistence:
       enabled: true
       size: 10Gi
