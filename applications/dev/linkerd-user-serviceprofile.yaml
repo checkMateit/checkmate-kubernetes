@@ -16,5 +16,5 @@ spec:
       condition:
         method: GET
         pathRegex: "^/users/me$"
-      isRetryable: true
-      timeout: 1s
+      isRetryable: false
+      timeout: 5s
