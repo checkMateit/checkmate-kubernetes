@@ -48,6 +48,13 @@ kube-prometheus-stack:
     prometheusSpec:
       retention: 7d
       scrapeInterval: 30s
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: "1"
+          memory: 1Gi
 
   alertmanager:
     enabled: true
