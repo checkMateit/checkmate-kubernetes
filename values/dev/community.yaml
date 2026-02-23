@@ -6,6 +6,9 @@ imagePullSecrets:
 envFrom:
   - secretRef:
       name: app-secrets
+extraEnv:
+  - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
+    value: "true"
 service:
   port: 8082
 livenessProbe:
