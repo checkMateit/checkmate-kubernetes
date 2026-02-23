@@ -44,7 +44,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "sum by (path) (count_over_time({namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+)(?: (?P<duration_ms>[0-9]+))?.*` | path=~\"$path\" [$__interval]))",
+              "expr": "sum by (path) (count_over_time({namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+) (?P<duration_ms>[0-9]+).*` [$__interval]))",
               "legendFormat": "{{`{{path}}`}}",
               "queryType": "range",
               "refId": "A"
@@ -68,7 +68,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "sum by (status) (count_over_time({namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+)(?: (?P<duration_ms>[0-9]+))?.*` | path=~\"$path\" [$__interval]))",
+              "expr": "sum by (status) (count_over_time({namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+) (?P<duration_ms>[0-9]+).*` [$__interval]))",
               "legendFormat": "{{`{{status}}`}}",
               "queryType": "range",
               "refId": "A"
@@ -92,7 +92,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "avg_over_time(({namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+)(?: (?P<duration_ms>[0-9]+))?.*` | path=~\"$path\" | unwrap duration_ms)[$__interval])",
+              "expr": "avg_over_time(({namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+) (?P<duration_ms>[0-9]+).*` | unwrap duration_ms)[$__interval])",
               "legendFormat": "avg duration",
               "queryType": "range",
               "refId": "A"
@@ -120,7 +120,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "sum(count_over_time({namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+)(?: (?P<duration_ms>[0-9]+))?.*` | status=~\"5..\" | path=~\"$path\" [5m]))",
+              "expr": "sum(count_over_time({namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+) (?P<duration_ms>[0-9]+).*` | status=~\"5..\" [5m]))",
               "queryType": "instant",
               "refId": "A"
             }
@@ -143,13 +143,13 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "topk(10, sum by (path) (count_over_time({namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+)(?: (?P<duration_ms>[0-9]+))?.*` | path=~\"$path\" [5m])))",
+              "expr": "topk(10, sum by (path) (sum_over_time(({namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+) (?P<duration_ms>[0-9]+).*` | unwrap bytes)[5m]))))",
               "legendFormat": "{{`{{path}}`}}",
               "queryType": "instant",
               "refId": "A"
             }
           ],
-          "title": "Top Paths (5m)",
+          "title": "Response Bytes by Path (Top 10 / 5m)",
           "type": "barchart"
         },
         {
@@ -160,12 +160,12 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "{namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+)(?: (?P<duration_ms>[0-9]+))?.*` | path=~\"$path\"",
+              "expr": "{namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+) (?P<duration_ms>[0-9]+).*`",
               "queryType": "range",
               "refId": "A"
             }
           ],
-          "title": "Gateway Access Logs (Loki)",
+          "title": "Gateway Request/Response Logs (method/path/status/bytes/duration)",
           "type": "logs"
         }
       ],
@@ -179,14 +179,14 @@ data:
             "current": { "selected": true, "text": "All", "value": ".*" },
             "datasource": { "type": "loki", "uid": "loki" },
             "includeAll": true,
-            "label": "Path",
+            "label": "Path (preview only)",
             "multi": false,
             "name": "path",
             "options": [],
             "query": {
               "label": "path",
               "refId": "LokiVariableQueryEditor-Path",
-              "stream": "{namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+)(?: (?P<duration_ms>[0-9]+))?.*`",
+              "stream": "{namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `.* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+) (?P<duration_ms>[0-9]+).*`",
               "type": 1
             },
             "refresh": 2,
