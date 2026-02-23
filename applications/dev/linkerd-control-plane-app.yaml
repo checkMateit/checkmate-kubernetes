@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linkerd-control-plane
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "12"
+spec:
+  project: default
+  source:
+    repoURL: https://helm.linkerd.io/stable
+    chart: linkerd-control-plane
+    targetRevision: 1.16.11
+    helm:
+      releaseName: linkerd-control-plane
+      values: |
+        identity:
+          externalCA: true
+          issuer:
+            scheme: kubernetes.io/tls
+            crtExpiry: 8760h0m0s
+        proxyInjector:
+          externalSecret: true
+        profileValidator:
+          externalSecret: true
+        policyValidator:
+          externalSecret: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: linkerd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - SkipDryRunOnMissingResource=true
