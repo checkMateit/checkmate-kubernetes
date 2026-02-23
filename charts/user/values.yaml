@@ -162,3 +162,18 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+rollout:
+  enabled: false
+  canary:
+    maxSurge: 25%
+    maxUnavailable: 0
+    steps:
+      - setWeight: 20
+      - pause:
+          duration: 30s
+      - setWeight: 50
+      - pause:
+          duration: 30s
+      - setWeight: 100
+
