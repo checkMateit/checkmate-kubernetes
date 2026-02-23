@@ -10,7 +10,7 @@ extraEnv:
   - name: MANAGEMENT_ENDPOINT_GATEWAY_ENABLED
     value: "true"
   - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
-    value: "health,info,gateway,prometheus"
+    value: "health,info,gateway"
   - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
     value: "true"
   - name: JAVA_TOOL_OPTIONS
@@ -21,7 +21,7 @@ service:
   type: ClusterIP
   port: 8080
 serviceMonitor:
-  enabled: true
+  enabled: false
   labels:
     release: monitoring
   path: /actuator/prometheus
