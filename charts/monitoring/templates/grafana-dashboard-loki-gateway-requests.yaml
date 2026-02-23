@@ -160,7 +160,7 @@ data:
           "targets": [
             {
               "editorMode": "code",
-              "expr": "{namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `(?P<app_ts>[0-9T:\\.-]+Z).*AccessLog\\s+: .* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+) (?P<duration_ms>[0-9]+).*` | line_format `time={{.app_ts}} service=gateway-service request={{.method}} {{.path}} response=status={{.status}} bytes={{.bytes}} duration_ms={{.duration_ms}}`",
+              "expr": "{namespace=\"gateway\"} |= \"reactor.netty.http.server.AccessLog\" | regexp `(?P<app_ts>[0-9T:\\.-]+Z).*AccessLog\\s+: .* \\\"(?P<method>[A-Z]+) (?P<path>[^ ]+) HTTP/[0-9.]+\\\" (?P<status>[0-9]{3}) (?P<bytes>[0-9-]+) (?P<duration_ms>[0-9]+).*` | line_format `{{.app_ts}} [gateway-service] \\\"{{.method}} {{.path}}\\\" status={{.status}}`",
               "queryType": "range",
               "refId": "A"
             }
