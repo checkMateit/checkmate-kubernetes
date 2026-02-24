@@ -7,8 +7,8 @@ envFrom:
   - secretRef:
       name: app-secrets
 extraEnv:
-  - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
-    value: "true"
+  - name: SPRING_PROFILES_ACTIVE
+    value: "k8s"
 service:
   port: 8084
 resources:

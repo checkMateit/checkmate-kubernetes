@@ -7,12 +7,18 @@ envFrom:
   - secretRef:
       name: app-secrets
 extraEnv:
+  - name: SPRING_PROFILES_ACTIVE
+    value: "k8s"
+  - name: USER_SERVICE_URL
+    value: "http://user:8081"
+  - name: STORE_SERVICE_URL
+    value: "http://store:8084"
+  - name: COMMUNITY_SERVICE_URL
+    value: "http://community:8082"
   - name: MANAGEMENT_ENDPOINT_GATEWAY_ENABLED
     value: "true"
   - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
     value: "health,info,gateway"
-  - name: EUREKA_INSTANCE_PREFER_IP_ADDRESS
-    value: "true"
   - name: JAVA_TOOL_OPTIONS
     value: "-Dreactor.netty.http.server.accessLogEnabled=true"
   - name: LOGGING_LEVEL_REACTOR_NETTY_HTTP_SERVER_ACCESSLOG
