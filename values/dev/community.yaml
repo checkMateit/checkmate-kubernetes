@@ -11,6 +11,13 @@ extraEnv:
     value: "true"
 service:
   port: 8082
+resources:
+  requests:
+    cpu: 200m
+    memory: 384Mi
+  limits:
+    cpu: "1"
+    memory: 768Mi
 livenessProbe:
   httpGet: null
   tcpSocket:

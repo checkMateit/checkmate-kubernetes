@@ -4,12 +4,26 @@ kube-prometheus-stack:
   prometheusOperator:
     admissionWebhooks:
       enabled: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
 
   grafana:
     enabled: true
     adminPassword: admin
     service:
       type: ClusterIP
+    resources:
+      requests:
+        cpu: 100m
+        memory: 192Mi
+      limits:
+        cpu: 500m
+        memory: 384Mi
     ingress:
       enabled: true
       ingressClassName: traefik
@@ -62,6 +76,13 @@ kube-prometheus-stack:
     alertmanagerSpec:
       version: v0.28.0
       replicas: 1
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          cpu: 300m
+          memory: 256Mi
       alertmanagerConfigMatcherStrategy:
         type: None
       alertmanagerConfigSelector:
@@ -98,6 +119,13 @@ loki:
   deploymentMode: SingleBinary
   singleBinary:
     replicas: 1
+    resources:
+      requests:
+        cpu: 200m
+        memory: 384Mi
+      limits:
+        cpu: "1"
+        memory: 768Mi
   backend:
     replicas: 0
   read:
@@ -112,6 +140,13 @@ loki:
     enabled: false
 
 promtail:
+  resources:
+    requests:
+      cpu: 30m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 160Mi
   serviceMonitor:
     enabled: true
     labels:

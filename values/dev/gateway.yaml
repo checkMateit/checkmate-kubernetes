@@ -20,6 +20,13 @@ extraEnv:
 service:
   type: ClusterIP
   port: 8080
+resources:
+  requests:
+    cpu: 150m
+    memory: 256Mi
+  limits:
+    cpu: 700m
+    memory: 512Mi
 rollout:
   enabled: true
   canary:
