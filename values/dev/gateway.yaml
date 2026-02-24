@@ -10,11 +10,11 @@ extraEnv:
   - name: SPRING_PROFILES_ACTIVE
     value: "k8s"
   - name: USER_SERVICE_URL
-    value: "http://user:8081"
+    value: "http://user.user.svc.cluster.local:8081"
   - name: STORE_SERVICE_URL
-    value: "http://store:8084"
+    value: "http://store.store.svc.cluster.local:8084"
   - name: COMMUNITY_SERVICE_URL
-    value: "http://community:8082"
+    value: "http://community.community.svc.cluster.local:8082"
   - name: MANAGEMENT_ENDPOINT_GATEWAY_ENABLED
     value: "true"
   - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
