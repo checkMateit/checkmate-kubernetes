@@ -1,0 +1,73 @@
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  name: store.store.svc.cluster.local
+  namespace: store
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+spec:
+  retryBudget:
+    ttl: 10s
+    minRetriesPerSecond: 10
+    retryRatio: 0.2
+  routes:
+    - name: get-products
+      condition:
+        method: GET
+        pathRegex: "^/products.*$"
+      isRetryable: true
+      timeout: 1s
+    - name: get-badges
+      condition:
+        method: GET
+        pathRegex: "^/badges.*$"
+      isRetryable: true
+      timeout: 1s
+    - name: get-points
+      condition:
+        method: GET
+        pathRegex: "^/points.*$"
+      isRetryable: true
+      timeout: 1s
+    - name: post-products
+      condition:
+        method: POST
+        pathRegex: "^/products$"
+      isRetryable: false
+      timeout: 2s
+    - name: patch-product
+      condition:
+        method: PATCH
+        pathRegex: "^/products/[^/]+$"
+      isRetryable: false
+      timeout: 2s
+    - name: patch-product-delete
+      condition:
+        method: PATCH
+        pathRegex: "^/products/[^/]+/delete$"
+      isRetryable: false
+      timeout: 2s
+    - name: post-badges
+      condition:
+        method: POST
+        pathRegex: "^/badges$"
+      isRetryable: false
+      timeout: 2s
+    - name: patch-badge
+      condition:
+        method: PATCH
+        pathRegex: "^/badges/[^/]+$"
+      isRetryable: false
+      timeout: 2s
+    - name: patch-badge-delete
+      condition:
+        method: PATCH
+        pathRegex: "^/badges/[^/]+/delete$"
+      isRetryable: false
+      timeout: 2s
+    - name: delete-badges
+      condition:
+        method: DELETE
+        pathRegex: "^/badges.*$"
+      isRetryable: false
+      timeout: 2s

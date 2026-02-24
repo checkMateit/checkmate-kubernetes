@@ -1,0 +1,43 @@
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  name: user.user.svc.cluster.local
+  namespace: user
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+spec:
+  retryBudget:
+    ttl: 10s
+    minRetriesPerSecond: 10
+    retryRatio: 0.2
+  routes:
+    - name: get-users
+      condition:
+        method: GET
+        pathRegex: "^/users.*$"
+      isRetryable: true
+      timeout: 1s
+    - name: post-auth
+      condition:
+        method: POST
+        pathRegex: "^/auth.*$"
+      isRetryable: false
+      timeout: 2s
+    - name: post-users
+      condition:
+        method: POST
+        pathRegex: "^/users$"
+      isRetryable: false
+      timeout: 2s
+    - name: patch-users
+      condition:
+        method: PATCH
+        pathRegex: "^/users.*$"
+      isRetryable: false
+      timeout: 2s
+    - name: delete-users
+      condition:
+        method: DELETE
+        pathRegex: "^/users.*$"
+      isRetryable: false
+      timeout: 2s

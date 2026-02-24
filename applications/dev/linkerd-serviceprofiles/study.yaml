@@ -1,0 +1,43 @@
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  name: study.study.svc.cluster.local
+  namespace: study
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+spec:
+  retryBudget:
+    ttl: 10s
+    minRetriesPerSecond: 10
+    retryRatio: 0.2
+  routes:
+    - name: get-study-groups
+      condition:
+        method: GET
+        pathRegex: "^/study-groups.*$"
+      isRetryable: true
+      timeout: 1s
+    - name: post-study-groups
+      condition:
+        method: POST
+        pathRegex: "^/study-groups.*$"
+      isRetryable: false
+      timeout: 2s
+    - name: patch-study-groups
+      condition:
+        method: PATCH
+        pathRegex: "^/study-groups.*$"
+      isRetryable: false
+      timeout: 2s
+    - name: delete-study-groups
+      condition:
+        method: DELETE
+        pathRegex: "^/study-groups.*$"
+      isRetryable: false
+      timeout: 2s
+    - name: post-study-groups-actions
+      condition:
+        method: POST
+        pathRegex: "^/study-groups.*$"
+      isRetryable: false
+      timeout: 2s

@@ -1,0 +1,61 @@
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  name: community.community.svc.cluster.local
+  namespace: community
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+spec:
+  retryBudget:
+    ttl: 10s
+    minRetriesPerSecond: 10
+    retryRatio: 0.2
+  routes:
+    - name: get-inquiries
+      condition:
+        method: GET
+        pathRegex: "^/inquiries.*$"
+      isRetryable: true
+      timeout: 1s
+    - name: get-notices
+      condition:
+        method: GET
+        pathRegex: "^/notices.*$"
+      isRetryable: true
+      timeout: 1s
+    - name: post-inquiries
+      condition:
+        method: POST
+        pathRegex: "^/inquiries.*$"
+      isRetryable: false
+      timeout: 2s
+    - name: patch-inquiries
+      condition:
+        method: PATCH
+        pathRegex: "^/inquiries.*$"
+      isRetryable: false
+      timeout: 2s
+    - name: delete-inquiries
+      condition:
+        method: DELETE
+        pathRegex: "^/inquiries.*$"
+      isRetryable: false
+      timeout: 2s
+    - name: post-notices
+      condition:
+        method: POST
+        pathRegex: "^/notices$"
+      isRetryable: false
+      timeout: 2s
+    - name: patch-notices
+      condition:
+        method: PATCH
+        pathRegex: "^/notices.*$"
+      isRetryable: false
+      timeout: 2s
+    - name: delete-notices
+      condition:
+        method: DELETE
+        pathRegex: "^/notices.*$"
+      isRetryable: false
+      timeout: 2s
