@@ -13,6 +13,47 @@ spec:
     targetRevision: 30.12.11
     helm:
       releaseName: linkerd-viz
+      values: |
+        prometheus:
+          resources:
+            requests:
+              cpu: 100m
+              memory: 192Mi
+            limits:
+              cpu: 400m
+              memory: 384Mi
+        metricsAPI:
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 192Mi
+        web:
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+        tap:
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 192Mi
+        tapInjector:
+          resources:
+            requests:
+              cpu: 30m
+              memory: 48Mi
+            limits:
+              cpu: 150m
+              memory: 128Mi
   destination:
     server: https://kubernetes.default.svc
     namespace: linkerd-viz
