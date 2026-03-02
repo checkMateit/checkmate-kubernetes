@@ -39,16 +39,27 @@ flowchart TD
     subgraph App["Application Layer"]
         direction TB
         Gateway[gateway]
-        User[user]
-        Community[community]
-        Study[study]
-        Store[store]
+
+        subgraph ServicesBox["Internal Services"]
+            direction LR
+            ServicesHub[services]
+            User[user]
+            Community[community]
+            Study[study]
+            Store[store]
+
+            ServicesHub --- User
+            ServicesHub --- Community
+            ServicesHub --- Study
+            ServicesHub --- Store
+
+            User -. mesh .- Community
+            Community -. mesh .- Study
+            Study -. mesh .- Store
+        end
 
         Traefik --> Gateway
-        Gateway --> User
-        Gateway --> Community
-        Gateway --> Study
-        Gateway --> Store
+        Gateway --> ServicesHub
     end
 
     subgraph Data["Data Layer"]
@@ -56,10 +67,7 @@ flowchart TD
         DataStore[(PostgreSQL / Redis)]
     end
 
-    User --> DataStore
-    Community --> DataStore
-    Study --> DataStore
-    Store --> DataStore
+    ServicesHub --> DataStore
 
     subgraph Mesh["Service Mesh"]
         direction TB
@@ -70,10 +78,7 @@ flowchart TD
     end
 
     Linkerd -. sidecar .- Gateway
-    Linkerd -. sidecar .- User
-    Linkerd -. sidecar .- Community
-    Linkerd -. sidecar .- Study
-    Linkerd -. sidecar .- Store
+    Linkerd -. mesh .- ServicesHub
     ServiceProfile --> Linkerd
     CertManager --> Linkerd
     TrustManager --> Linkerd
@@ -84,16 +89,13 @@ flowchart TD
     end
 
     Gateway --> Monitoring
-    User --> Monitoring
-    Community --> Monitoring
-    Study --> Monitoring
-    Store --> Monitoring
+    ServicesHub --> Monitoring
 
     ArgoCD --> Platform[applications / monitoring / data / linkerd]
 
     class Repo,ImageUpdater,ArgoCD gitops;
     class Client,Traefik ingress;
-    class Gateway,User,Community,Study,Store,Platform app;
+    class Gateway,ServicesHub,User,Community,Study,Store,Platform app;
     class DataStore data;
     class Linkerd,ServiceProfile,CertManager,TrustManager mesh;
     class Monitoring obs;
