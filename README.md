@@ -14,7 +14,7 @@ CheckMate의 MSA 백엔드와 플랫폼 인프라를 k3d 기반 Kubernetes 개�
 ## 아키텍처 요약
 
 ```mermaid
-flowchart TD
+flowchart LR
     classDef gitops fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-width:1px;
     classDef ingress fill:#dbeafe,stroke:#2563eb,color:#111827,stroke-width:1px;
     classDef app fill:#dcfce7,stroke:#16a34a,color:#111827,stroke-width:1px;
@@ -22,72 +22,59 @@ flowchart TD
     classDef mesh fill:#ede9fe,stroke:#7c3aed,color:#111827,stroke-width:1px;
     classDef obs fill:#fee2e2,stroke:#dc2626,color:#111827,stroke-width:1px;
 
-    Repo[Git Repository]
-    ImageUpdater[Argo CD Image Updater]
-    ArgoCD[Argo CD root-app]
+    %% GitOps
+    Repo[Git Repository] --> ArgoCD[Argo CD root-app]
+    ImageUpdater[Argo CD Image Updater] --> Repo
+    ArgoCD --> Platform[applications / monitoring / data / linkerd]
 
-    Repo --> ArgoCD
-    ImageUpdater --> Repo
+    %% Ingress
+    Client[Client / Frontend] --> Traefik[Traefik Ingress]
+    Traefik --> Gateway[gateway]
 
-    subgraph Ingress["Ingress Layer"]
-        direction TB
-        Client[Client / Frontend]
-        Traefik[Traefik Ingress]
-        Client --> Traefik
-    end
-
+    %% Application Layer (가로)
     subgraph App["Application Layer"]
-        direction TB
-        Gateway[gateway]
-
-        subgraph ServicesBox["Internal Services"]
-            direction LR
-            ServicesAnchor(( ))
-            User[user]
-            Community[community]
-            Study[study]
-            Store[store]
-
-            ServicesAnchor --- User
-            User -. mesh .- Community
-            Community -. mesh .- Study
-            Study -. mesh .- Store
-        end
-
-        Traefik --> Gateway
-        Gateway --> ServicesAnchor
-    end
-
-    subgraph Data["Data Layer"]
         direction LR
-        DataStore[(PostgreSQL / Redis)]
+        Gateway --> User[user]
+        Gateway --> Community[community]
+        Gateway --> Study[study]
+        Gateway --> Store[store]
     end
 
-    ServicesAnchor --> DataStore
+    %% Data
+    User --> DataStore[(PostgreSQL / Redis)]
+    Community --> DataStore
+    Study --> DataStore
+    Store --> DataStore
 
+    %% Service Mesh
     subgraph Mesh["Service Mesh"]
         direction TB
         Linkerd[Linkerd]
         ServiceProfile[ServiceProfile]
         CertManager[cert-manager]
         TrustManager[trust-manager]
+        ServiceProfile --> Linkerd
+        CertManager --> Linkerd
+        TrustManager --> Linkerd
     end
 
     Linkerd -. mesh .- Gateway
-    Linkerd -. mesh .- ServicesAnchor
-    ServiceProfile --> Linkerd
-    CertManager --> Linkerd
-    TrustManager --> Linkerd
+    Linkerd -. mesh .- User
+    Linkerd -. mesh .- Community
+    Linkerd -. mesh .- Study
+    Linkerd -. mesh .- Store
 
+    %% Observability
     subgraph Obs["Observability"]
         direction TB
         Monitoring[Prometheus / Grafana / Loki / Promtail / Alertmanager]
     end
 
     Gateway --> Monitoring
-    ServicesAnchor --> Monitoring
-
-    ArgoCD --> Platform[applications / monitoring / data / linkerd]
+    User --> Monitoring
+    Community --> Monitoring
+    Study --> Monitoring
+    Store --> Monitoring
 
     class Repo,ImageUpdater,ArgoCD gitops;
     class Client,Traefik ingress;
@@ -95,7 +82,6 @@ flowchart TD
     class DataStore data;
     class Linkerd,ServiceProfile,CertManager,TrustManager mesh;
     class Monitoring obs;
-    style ServicesAnchor fill:transparent,stroke:transparent,color:transparent;
 ```
 
 ## 서비스별 역할
