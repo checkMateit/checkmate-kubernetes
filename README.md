@@ -39,12 +39,16 @@ flowchart TD
     subgraph App["Application Layer"]
         direction TB
         Gateway[gateway]
-        Eureka[eureka]
-        Services[user / community / study / store]
+        User[user]
+        Community[community]
+        Study[study]
+        Store[store]
 
         Traefik --> Gateway
-        Gateway --> Eureka
-        Gateway --> Services
+        Gateway --> User
+        Gateway --> Community
+        Gateway --> Study
+        Gateway --> Store
     end
 
     subgraph Data["Data Layer"]
@@ -52,7 +56,10 @@ flowchart TD
         DataStore[(PostgreSQL / Redis)]
     end
 
-    Services --> DataStore
+    User --> DataStore
+    Community --> DataStore
+    Study --> DataStore
+    Store --> DataStore
 
     subgraph Mesh["Service Mesh"]
         direction TB
@@ -63,7 +70,10 @@ flowchart TD
     end
 
     Linkerd -. sidecar .- Gateway
-    Linkerd -. sidecar .- Services
+    Linkerd -. sidecar .- User
+    Linkerd -. sidecar .- Community
+    Linkerd -. sidecar .- Study
+    Linkerd -. sidecar .- Store
     ServiceProfile --> Linkerd
     CertManager --> Linkerd
     TrustManager --> Linkerd
@@ -74,13 +84,16 @@ flowchart TD
     end
 
     Gateway --> Monitoring
-    Services --> Monitoring
+    User --> Monitoring
+    Community --> Monitoring
+    Study --> Monitoring
+    Store --> Monitoring
 
     ArgoCD --> Platform[applications / monitoring / data / linkerd]
 
     class Repo,ImageUpdater,ArgoCD gitops;
     class Client,Traefik ingress;
-    class Gateway,Eureka,Services,Platform app;
+    class Gateway,User,Community,Study,Store,Platform app;
     class DataStore data;
     class Linkerd,ServiceProfile,CertManager,TrustManager mesh;
     class Monitoring obs;
