@@ -37,23 +37,37 @@ flowchart TD
     end
 
     subgraph App["Application Layer"]
-        direction LR
+        direction TB
         Gateway[gateway]
 
         subgraph ServicesBox["Internal Services"]
             direction LR
             ServicesAnchor(( ))
-            User[user]
-            Community[community]
-            Study[study]
-            Store[store]
-            MeshNote[service-to-service<br/>via Linkerd mesh]
+
+            subgraph LeftCol[" "]
+                direction TB
+                User[user]
+                Study[study]
+            end
+
+            subgraph MidCol[" "]
+                direction TB
+                MeshNote[service-to-service<br/>via Linkerd mesh]
+            end
+
+            subgraph RightCol[" "]
+                direction TB
+                Community[community]
+                Store[store]
+            end
 
             ServicesAnchor --- User
-            User --- Community
-            Community --- Study
-            Study --- Store
-            MeshNote -.-> ServicesAnchor
+            ServicesAnchor --- Community
+
+            User -. mesh .- Community
+            Community -. mesh .- Store
+            Store -. mesh .- Study
+            Study -. mesh .- User
         end
 
         Traefik --> Gateway
@@ -99,6 +113,9 @@ flowchart TD
     class Monitoring obs;
     style ServicesAnchor fill:transparent,stroke:transparent,color:transparent;
     style MeshNote fill:transparent,stroke:transparent,color:#6b7280;
+    style LeftCol fill:transparent,stroke:transparent;
+    style MidCol fill:transparent,stroke:transparent;
+    style RightCol fill:transparent,stroke:transparent;
 ```
 
 ## 서비스별 역할
