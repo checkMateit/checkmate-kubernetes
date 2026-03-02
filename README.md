@@ -37,32 +37,24 @@ flowchart TD
     end
 
     subgraph App["Application Layer"]
-        direction TB
+        direction LR
         Gateway[gateway]
 
         subgraph ServicesBox["Internal Services"]
-            direction TB
-            subgraph ServicesRow1[" "]
-                direction LR
-                User[user]
-                Community[community]
-            end
-            subgraph ServicesRow2[" "]
-                direction LR
-                Study[study]
-                Store[store]
-            end
+            direction LR
+            ServicesAnchor(( ))
+            User[user]
+            Community[community]
+            Study[study]
+            Store[store]
+            MeshNote[service-to-service<br/>via Linkerd mesh]
 
-            User -. mesh .- Community
-            Community -. mesh .- Study
-            Study -. mesh .- Store
+            ServicesAnchor --- User
+            User --- Community
+            Community --- Study
+            Study --- Store
+            MeshNote -.-> ServicesAnchor
         end
-
-        ServicesAnchor(( ))
-        ServicesAnchor --- User
-        ServicesAnchor --- Community
-        ServicesAnchor --- Study
-        ServicesAnchor --- Store
 
         Traefik --> Gateway
         Gateway --> ServicesAnchor
@@ -83,7 +75,7 @@ flowchart TD
         TrustManager[trust-manager]
     end
 
-    Linkerd -. sidecar .- Gateway
+    Linkerd -. mesh .- Gateway
     Linkerd -. mesh .- ServicesAnchor
     ServiceProfile --> Linkerd
     CertManager --> Linkerd
@@ -106,6 +98,7 @@ flowchart TD
     class Linkerd,ServiceProfile,CertManager,TrustManager mesh;
     class Monitoring obs;
     style ServicesAnchor fill:transparent,stroke:transparent,color:transparent;
+    style MeshNote fill:transparent,stroke:transparent,color:#6b7280;
 ```
 
 ## 서비스별 역할
