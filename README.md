@@ -39,7 +39,7 @@ flowchart TD
     subgraph App["Application Layer"]
         direction TB
         Gateway[gateway]
-       
+
         DevApp[Internal Services]
         User[user]
         Community[community]
@@ -71,7 +71,7 @@ flowchart TD
     end
 
     Linkerd -. sidecar .- Gateway
-    Linkerd -. sidecar .- DevApp
+    Linkerd -. mTLS .- DevApp
     ServiceProfile --> Linkerd
     CertManager --> Linkerd
     TrustManager --> Linkerd
