@@ -41,12 +41,18 @@ flowchart TD
         Gateway[gateway]
 
         subgraph ServicesBox["Internal Services"]
-            direction LR
+            direction TB
             ServicesHub[services]
-            User[user]
-            Community[community]
-            Study[study]
-            Store[store]
+            subgraph ServicesRow1[" "]
+                direction LR
+                User[user]
+                Community[community]
+            end
+            subgraph ServicesRow2[" "]
+                direction LR
+                Study[study]
+                Store[store]
+            end
 
             ServicesHub --- User
             ServicesHub --- Community
