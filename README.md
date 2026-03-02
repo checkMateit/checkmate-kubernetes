@@ -40,7 +40,7 @@ flowchart TD
         direction TB
         Gateway[gateway]
        
-        DevApp[Internal Services]
+        DevApp[DevApp]
         User[user]
         Community[community]
         Study[study]
