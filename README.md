@@ -42,7 +42,6 @@ flowchart TD
 
         subgraph ServicesBox["Internal Services"]
             direction TB
-            ServicesHub[services]
             subgraph ServicesRow1[" "]
                 direction LR
                 User[user]
@@ -54,18 +53,19 @@ flowchart TD
                 Store[store]
             end
 
-            ServicesHub --- User
-            ServicesHub --- Community
-            ServicesHub --- Study
-            ServicesHub --- Store
-
             User -. mesh .- Community
             Community -. mesh .- Study
             Study -. mesh .- Store
         end
 
+        ServicesAnchor(( ))
+        ServicesAnchor --- User
+        ServicesAnchor --- Community
+        ServicesAnchor --- Study
+        ServicesAnchor --- Store
+
         Traefik --> Gateway
-        Gateway --> ServicesHub
+        Gateway --> ServicesAnchor
     end
 
     subgraph Data["Data Layer"]
@@ -73,7 +73,7 @@ flowchart TD
         DataStore[(PostgreSQL / Redis)]
     end
 
-    ServicesHub --> DataStore
+    ServicesAnchor --> DataStore
 
     subgraph Mesh["Service Mesh"]
         direction TB
@@ -84,7 +84,7 @@ flowchart TD
     end
 
     Linkerd -. sidecar .- Gateway
-    Linkerd -. mesh .- ServicesHub
+    Linkerd -. mesh .- ServicesAnchor
     ServiceProfile --> Linkerd
     CertManager --> Linkerd
     TrustManager --> Linkerd
@@ -95,16 +95,17 @@ flowchart TD
     end
 
     Gateway --> Monitoring
-    ServicesHub --> Monitoring
+    ServicesAnchor --> Monitoring
 
     ArgoCD --> Platform[applications / monitoring / data / linkerd]
 
     class Repo,ImageUpdater,ArgoCD gitops;
     class Client,Traefik ingress;
-    class Gateway,ServicesHub,User,Community,Study,Store,Platform app;
+    class Gateway,User,Community,Study,Store,Platform app;
     class DataStore data;
     class Linkerd,ServiceProfile,CertManager,TrustManager mesh;
     class Monitoring obs;
+    style ServicesAnchor fill:transparent,stroke:transparent,color:transparent;
 ```
 
 ## 서비스별 역할
