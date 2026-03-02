@@ -15,22 +15,119 @@ CheckMate의 MSA 백엔드와 플랫폼 인프라를 k3d 기반 Kubernetes 개�
 
 ```mermaid
 flowchart TD
-    Client[Client / Frontend] --> Traefik[Traefik Ingress]
-    Traefik --> Gateway[gateway]
+    classDef gitops fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-width:1px;
+    classDef ingress fill:#dbeafe,stroke:#2563eb,color:#111827,stroke-width:1px;
+    classDef app fill:#dcfce7,stroke:#16a34a,color:#111827,stroke-width:1px;
+    classDef data fill:#fef3c7,stroke:#d97706,color:#111827,stroke-width:1px;
+    classDef mesh fill:#ede9fe,stroke:#7c3aed,color:#111827,stroke-width:1px;
+    classDef obs fill:#fee2e2,stroke:#dc2626,color:#111827,stroke-width:1px;
 
-    Gateway --> Eureka[eureka]
-    Gateway --> Services[user / community / study / store]
+    Repo[Git Repository]
+    ImageUpdater[Argo CD Image Updater]
+    ArgoCD[Argo CD root-app]
 
-    Services --> Data[(PostgreSQL / Redis)]
+    Repo --> ArgoCD
+    ImageUpdater --> Repo
 
-    Linkerd[Linkerd] -. mesh .- Gateway
-    Linkerd -. mesh .- Services
+    subgraph Ingress["Ingress Layer"]
+        direction TB
+        Client[Client / Frontend]
+        Traefik[Traefik Ingress]
+        Client --> Traefik
+    end
 
-    Monitoring[Prometheus / Grafana / Loki / Alertmanager] --> Gateway
-    Monitoring --> Services
+    subgraph App["Application Layer"]
+        direction TB
+        Gateway[gateway]
+        Eureka[eureka]
+        User[user]
+        Community[community]
+        Study[study]
+        Store[store]
 
-    ArgoCD[Argo CD] --> Repo[this repo]
-    ArgoCD --> Platform[applications / monitoring / data / linkerd]
+        Traefik --> Gateway
+        Gateway --> Eureka
+        Gateway --> User
+        Gateway --> Community
+        Gateway --> Study
+        Gateway --> Store
+    end
+
+    subgraph Data["Data Layer"]
+        direction LR
+        Postgres[(PostgreSQL)]
+        Redis[(Redis)]
+    end
+
+    User --> Postgres
+    User --> Redis
+    Community --> Postgres
+    Study --> Postgres
+    Store --> Postgres
+
+    subgraph Mesh["Service Mesh"]
+        direction TB
+        Linkerd[Linkerd]
+        ServiceProfile[ServiceProfile]
+        CertManager[cert-manager]
+        TrustManager[trust-manager]
+    end
+
+    Linkerd -. sidecar .- Gateway
+    Linkerd -. sidecar .- User
+    Linkerd -. sidecar .- Community
+    Linkerd -. sidecar .- Study
+    Linkerd -. sidecar .- Store
+    ServiceProfile --> Linkerd
+    CertManager --> Linkerd
+    TrustManager --> Linkerd
+
+    subgraph Obs["Observability"]
+        direction TB
+        Prometheus[Prometheus]
+        Grafana[Grafana]
+        Loki[Loki]
+        Promtail[Promtail]
+        Alertmanager[Alertmanager]
+    end
+
+    Gateway --> Prometheus
+    User --> Prometheus
+    Community --> Prometheus
+    Study --> Prometheus
+    Store --> Prometheus
+
+    Gateway --> Promtail
+    User --> Promtail
+    Community --> Promtail
+    Study --> Promtail
+    Store --> Promtail
+
+    Promtail --> Loki
+    Prometheus --> Grafana
+    Loki --> Grafana
+    Alertmanager --> Grafana
+
+    ArgoCD --> Gateway
+    ArgoCD --> Eureka
+    ArgoCD --> User
+    ArgoCD --> Community
+    ArgoCD --> Study
+    ArgoCD --> Store
+    ArgoCD --> Postgres
+    ArgoCD --> Redis
+    ArgoCD --> Linkerd
+    ArgoCD --> Prometheus
+    ArgoCD --> Grafana
+    ArgoCD --> Loki
+    ArgoCD --> Alertmanager
+
+    class Repo,ImageUpdater,ArgoCD gitops;
+    class Client,Traefik ingress;
+    class Gateway,Eureka,User,Community,Study,Store app;
+    class Postgres,Redis data;
+    class Linkerd,ServiceProfile,CertManager,TrustManager mesh;
+    class Prometheus,Grafana,Loki,Promtail,Alertmanager obs;
 ```
 
 ## 서비스별 역할
