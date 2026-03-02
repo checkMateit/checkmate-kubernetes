@@ -39,20 +39,20 @@ flowchart TD
     subgraph App["Application Layer"]
         direction TB
         Gateway[gateway]
-        Eureka[eureka]
-        AppHub(( ))
+       
+        DevApp[DevApp]
         User[user]
         Community[community]
         Study[study]
         Store[store]
 
         Traefik --> Gateway
-        Gateway --> Eureka
-        Gateway --> AppHub
-        AppHub --- User
-        AppHub --- Community
-        AppHub --- Study
-        AppHub --- Store
+      
+        Gateway --> DevApp
+        DevApp--- User
+        DevApp --- Community
+        DevApp --- Study
+        DevApp --- Store
     end
 
     subgraph Data["Data Layer"]
@@ -88,7 +88,7 @@ flowchart TD
 
     class Repo,ImageUpdater,ArgoCD gitops;
     class Client,Traefik ingress;
-    class Gateway,Eureka,User,Community,Study,Store,Platform app;
+    class Gateway,User,Community,Study,Store,Platform app;
     class DataStore data;
     class Linkerd,ServiceProfile,CertManager,TrustManager mesh;
     class Monitoring obs;
