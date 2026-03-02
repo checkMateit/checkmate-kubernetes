@@ -15,7 +15,7 @@ CheckMate의 MSA 백엔드와 플랫폼 인프라를 k3d 기반 Kubernetes 개�
 
 ```mermaid
 flowchart TD
-  classDef gitops fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-width:1px;
+    classDef gitops fill:#f3f4f6,stroke:#4b5563,color:#111827,stroke-width:1px;
     classDef ingress fill:#dbeafe,stroke:#2563eb,color:#111827,stroke-width:1px;
     classDef app fill:#dcfce7,stroke:#16a34a,color:#111827,stroke-width:1px;
     classDef data fill:#fef3c7,stroke:#d97706,color:#111827,stroke-width:1px;
@@ -40,6 +40,7 @@ flowchart TD
         direction TB
         Gateway[gateway]
         Eureka[eureka]
+        AppHub(( ))
         User[user]
         Community[community]
         Study[study]
@@ -47,23 +48,19 @@ flowchart TD
 
         Traefik --> Gateway
         Gateway --> Eureka
-        Gateway --> User
-        Gateway --> Community
-        Gateway --> Study
-        Gateway --> Store
+        Gateway --> AppHub
+        AppHub --- User
+        AppHub --- Community
+        AppHub --- Study
+        AppHub --- Store
     end
 
     subgraph Data["Data Layer"]
         direction LR
-        Postgres[(PostgreSQL)]
-        Redis[(Redis)]
+        DataStore[(PostgreSQL / Redis)]
     end
 
-    User --> Postgres
-    User --> Redis
-    Community --> Postgres
-    Study --> Postgres
-    Store --> Postgres
+    AppHub --> DataStore
 
     subgraph Mesh["Service Mesh"]
         direction TB
@@ -74,60 +71,28 @@ flowchart TD
     end
 
     Linkerd -. sidecar .- Gateway
-    Linkerd -. sidecar .- User
-    Linkerd -. sidecar .- Community
-    Linkerd -. sidecar .- Study
-    Linkerd -. sidecar .- Store
+    Linkerd -. sidecar .- AppHub
     ServiceProfile --> Linkerd
     CertManager --> Linkerd
     TrustManager --> Linkerd
 
     subgraph Obs["Observability"]
         direction TB
-        Prometheus[Prometheus]
-        Grafana[Grafana]
-        Loki[Loki]
-        Promtail[Promtail]
-        Alertmanager[Alertmanager]
+        Monitoring[Prometheus / Grafana / Loki / Promtail / Alertmanager]
     end
 
-    Gateway --> Prometheus
-    User --> Prometheus
-    Community --> Prometheus
-    Study --> Prometheus
-    Store --> Prometheus
+    Gateway --> Monitoring
+    AppHub --> Monitoring
 
-    Gateway --> Promtail
-    User --> Promtail
-    Community --> Promtail
-    Study --> Promtail
-    Store --> Promtail
-
-    Promtail --> Loki
-    Prometheus --> Grafana
-    Loki --> Grafana
-    Alertmanager --> Grafana
-
-    ArgoCD --> Gateway
-    ArgoCD --> Eureka
-    ArgoCD --> User
-    ArgoCD --> Community
-    ArgoCD --> Study
-    ArgoCD --> Store
-    ArgoCD --> Postgres
-    ArgoCD --> Redis
-    ArgoCD --> Linkerd
-    ArgoCD --> Prometheus
-    ArgoCD --> Grafana
-    ArgoCD --> Loki
-    ArgoCD --> Alertmanager
+    ArgoCD --> Platform[applications / monitoring / data / linkerd]
 
     class Repo,ImageUpdater,ArgoCD gitops;
     class Client,Traefik ingress;
-    class Gateway,Eureka,User,Community,Study,Store app;
-    class Postgres,Redis data;
+    class Gateway,Eureka,User,Community,Study,Store,Platform app;
+    class DataStore data;
     class Linkerd,ServiceProfile,CertManager,TrustManager mesh;
-    class Prometheus,Grafana,Loki,Promtail,Alertmanager obs;
+    class Monitoring obs;
+    style AppHub fill:transparent,stroke:transparent,color:transparent;
 ```
 
 ## 서비스별 역할
