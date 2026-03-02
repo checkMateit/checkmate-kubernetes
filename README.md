@@ -5,7 +5,7 @@ CheckMate의 MSA 백엔드와 플랫폼 인프라를 k3d 기반 Kubernetes 개�
 
 ## 구성
 
-- 애플리케이션: `gateway`, `eureka`, `community`, `study`, `user`, `store`
+- 애플리케이션: `gateway`, `community`, `study`, `user`, `store`
 - 플랫폼: Argo CD, Argo Rollouts, Linkerd, cert-manager, trust-manager
 - 관측: Prometheus, Grafana, Loki, Promtail, Alertmanager
 - 데이터: PostgreSQL, Redis
