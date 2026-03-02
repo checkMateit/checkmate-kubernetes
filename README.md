@@ -40,7 +40,7 @@ flowchart TD
         direction TB
         Gateway[gateway]
        
-        DevApp[DevApp]
+        DevApp[Internal Services]
         User[user]
         Community[community]
         Study[study]
@@ -88,11 +88,10 @@ flowchart TD
 
     class Repo,ImageUpdater,ArgoCD gitops;
     class Client,Traefik ingress;
-    class Gateway,User,Community,Study,Store,Platform app;
+    class Gateway,DevApp,User,Community,Study,Store,Platform app;
     class DataStore data;
     class Linkerd,ServiceProfile,CertManager,TrustManager mesh;
     class Monitoring obs;
-    style DevApp fill:transparent,stroke:transparent,color:transparent;
 ```
 
 ## 서비스별 역할
