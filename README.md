@@ -141,7 +141,15 @@ sync wave
 - 배포 리소스. 일부는 `Deployment`, 일부는 `Rollout`.
 - 관리 범위. 애플리케이션뿐 아니라 Linkerd, monitoring, data까지 포함.
 
-## Linkerd ServiceProfile
+## Linkerd
+
+- 서비스 메시 구성. 내부 서비스 간 통신을 Linkerd로 처리.
+- 보안. 서비스 간 통신에 mTLS 적용.
+- 인증서 관리. `cert-manager`, `trust-manager`, `manifests/linkerd-certs` 조합으로 trust anchor와 identity issuer 관리.
+- 컨트롤 플레인. `linkerd-control-plane` Helm 차트로 배포.
+
+
+### ServiceProfile
 
 공통 정책.
 
