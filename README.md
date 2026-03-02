@@ -1,6 +1,6 @@
 # checkmate-kubernetes
 
-CheckMate의 MSA 백엔드와 플랫폼 인프라를 k3d 기반 Kubernetes 개발 환경에서 GitOps로 관리
+CheckMate의 MSA 백엔드와 플랫폼 인프라를 k3d 기반 Kubernetes 개발 환경에서 GitOps로 관리.
 
 
 ## 구성
@@ -40,7 +40,7 @@ flowchart TD
         direction TB
         Gateway[gateway]
        
-        DevApp[DevApp]
+        DevApp[Internal Services]
         User[user]
         Community[community]
         Study[study]
@@ -60,7 +60,7 @@ flowchart TD
         DataStore[(PostgreSQL / Redis)]
     end
 
-    AppHub --> DataStore
+    DevApp --> DataStore
 
     subgraph Mesh["Service Mesh"]
         direction TB
@@ -71,7 +71,7 @@ flowchart TD
     end
 
     Linkerd -. sidecar .- Gateway
-    Linkerd -. sidecar .- AppHub
+    Linkerd -. sidecar .- DevApp
     ServiceProfile --> Linkerd
     CertManager --> Linkerd
     TrustManager --> Linkerd
@@ -82,7 +82,7 @@ flowchart TD
     end
 
     Gateway --> Monitoring
-    AppHub --> Monitoring
+    DevApp --> Monitoring
 
     ArgoCD --> Platform[applications / monitoring / data / linkerd]
 
@@ -92,7 +92,7 @@ flowchart TD
     class DataStore data;
     class Linkerd,ServiceProfile,CertManager,TrustManager mesh;
     class Monitoring obs;
-    style AppHub fill:transparent,stroke:transparent,color:transparent;
+    style DevApp fill:transparent,stroke:transparent,color:transparent;
 ```
 
 ## 서비스별 역할
@@ -100,7 +100,6 @@ flowchart TD
 | 서비스 | 역할 |
 | --- | --- |
 | `gateway` | 외부 요청 진입점과 내부 API 라우팅 |
-| `eureka` | 서비스 등록 및 서비스 디스커버리 |
 | `user` | 사용자, 인증/인가 관련 도메인 |
 | `community` | 공지, 문의 등 커뮤니티 도메인 |
 | `study` | 스터디 그룹 관련 도메인 |
